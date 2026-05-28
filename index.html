@@ -526,6 +526,7 @@
       .build-grid { grid-template-columns: 1fr; max-width: 340px; }
       .stat-row { grid-template-columns: repeat(3,1fr); }
       h1 { letter-spacing: -0.02em; }
+      .desktop-logo { display: none !important; }
     }
 
     /* ── Waveform ── */
@@ -1050,7 +1051,8 @@ Technology can handle what falls through the cracks so you can focus on people a
       const link = document.createElement('a');
       link.href = '#';
       link.setAttribute('aria-label', 'Back to top');
-      link.style.cssText = 'position:absolute;bottom:28px;right:32px;display:block;';
+      link.style.cssText = 'position:absolute;bottom:28px;right:32px;display:block;'
+      link.classList.add('desktop-logo');
       logo.style.cssText = `width:280px;opacity:${opacity};filter:brightness(0) invert(1);display:block;cursor:pointer;`;
       link.addEventListener('click', e => { e.preventDefault(); sections[0].scrollIntoView({ behavior: 'smooth' }); });
       link.appendChild(logo);
@@ -1176,9 +1178,9 @@ Technology can handle what falls through the cracks so you can focus on people a
       if (!callScreen) return;
 
       // Reset — no transitions
-      callScreen.style.transition   = 'none'; callScreen.style.opacity   = '1';
-      missedScreen.style.transition = 'none'; missedScreen.style.opacity = '0';
-      threadScreen.style.transition = 'none'; threadScreen.style.opacity = '0';
+      callScreen.style.transition   = 'none'; callScreen.style.opacity = '1'; callScreen.style.transform = 'translateX(0)';
+      missedScreen.style.transition = 'none'; missedScreen.style.opacity = '1'; missedScreen.style.transform = 'translateX(100%)';
+      threadScreen.style.transition = 'none'; threadScreen.style.opacity = '0'; threadScreen.style.transform = 'translateX(100%)';
       if (notifCard) { notifCard.style.transition = 'none'; notifCard.style.transform = 'translateY(-90px)'; }
       [msg1, time1, reply, time2, msg2].forEach(el => {
         if (!el) return;
@@ -1187,25 +1189,28 @@ Technology can handle what falls through the cracks so you can focus on people a
       });
 
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        callScreen.style.transition   = 'opacity 0.5s';
-        missedScreen.style.transition = 'opacity 0.4s';
-        threadScreen.style.transition = 'opacity 0.4s';
+        callScreen.style.transition   = 'transform 0.4s cubic-bezier(0.4,0,0.2,1)';
+        missedScreen.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.2,1)';
+        threadScreen.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s';
         if (notifCard) notifCard.style.transition = 'transform 0.45s cubic-bezier(0.4,0,0.2,1)';
         [msg1, reply, msg2].forEach(el => { if (el) el.style.transition = 'opacity 0.4s, transform 0.4s'; });
         [time1, time2].forEach(el => { if (el) el.style.transition = 'opacity 0.3s'; });
       }));
 
-      // Call rings for ~3s, then miss it
-      setTimeout(() => { callScreen.style.opacity = '0'; }, 3000);
-
-      // Lock screen fades in
-      setTimeout(() => { missedScreen.style.opacity = '1'; }, 3500);
+      // Call rings for ~3s, then swipe left as missed screen swipes in from right
+      setTimeout(() => {
+        callScreen.style.transform  = 'translateX(-100%)';
+        missedScreen.style.transform = 'translateX(0)';
+      }, 3000);
 
       // Notification card drops down
-      setTimeout(() => { if (notifCard) notifCard.style.transform = 'translateY(0)'; }, 3900);
+      setTimeout(() => { if (notifCard) notifCard.style.transform = 'translateY(0)'; }, 3600);
 
-      // Hold on notification, then cut to iMessage thread
-      setTimeout(() => { missedScreen.style.opacity = '0'; threadScreen.style.opacity = '1'; }, 6000);
+      // Hold on notification, then slide to iMessage thread
+      setTimeout(() => {
+        missedScreen.style.transform = 'translateX(-100%)';
+        threadScreen.style.opacity = '1'; threadScreen.style.transform = 'translateX(0)';
+      }, 6000);
 
       // Messages appear — generous spacing so the conversation is easy to follow
       setTimeout(() => { if (msg1)  { msg1.style.opacity  = '1'; msg1.style.transform  = 'translateY(0)'; } }, 6700);
