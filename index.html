@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI for Your Business</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --coral:   #E8573F;
+      --cream:   #F7F3EE;
+      --cobalt:  #1B5FA8;
+      --amber:   #F2A93B;
+      --forest:  #2D4A3E;
+      --charcoal:#1E1E1E;
+      --white:   #FFFFFF;
+      --muted-dark: rgba(255,255,255,0.55);
+      --muted-light: #888;
+      --card-bg: #FFFFFF;
+      --card-border: #E8E4DF;
+    }
+
+    html {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.4;
+    }
+
+    section {
+      min-height: 100svh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 56px 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* ── Backgrounds ── */
+    .bg-coral  { background: var(--coral);  color: var(--white); }
+    .bg-cream  { background: var(--cream);  color: var(--charcoal); }
+    .bg-cobalt { background: var(--cobalt); color: var(--white); }
+    .bg-amber  { background: var(--amber);  color: var(--charcoal); }
+    .bg-forest { background: var(--forest); color: var(--white); }
+
+    /* ── Labels ── */
+    .label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: 0.7;
+    }
+
+    .bg-cream  .label { color: var(--cobalt); opacity: 1; }
+    .bg-amber  .label { color: var(--forest); opacity: 0.8; }
+
+    /* ── Headlines ── */
+    h1 {
+      font-size: clamp(2.4rem, 6.5vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 880px;
+    }
+
+    h2 {
+      font-size: clamp(1.9rem, 5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      max-width: 760px;
+    }
+
+    h3 {
+      font-size: clamp(1.3rem, 3vw, 2.2rem);
+      font-weight: 600;
+      line-height: 1.2;
+      max-width: 640px;
+    }
+
+    .sub {
+      font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+      max-width: 560px;
+      margin-top: 18px;
+      line-height: 1.65;
+    }
+
+    .bg-coral  .sub,
+    .bg-cobalt .sub,
+    .bg-forest .sub { color: var(--muted-dark); }
+    .bg-cream  .sub { color: var(--muted-light); }
+    .bg-amber  .sub { color: rgba(30,30,30,0.65); }
+
+    /* ── Image placeholder ── */
+    .img-slot {
+      border: 2px dashed rgba(255,255,255,0.25);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 32px 24px;
+      margin-top: 32px;
+      min-height: 180px;
+      width: 100%;
+      max-width: 520px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .bg-cream .img-slot {
+      border-color: rgba(0,0,0,0.12);
+    }
+
+    .bg-amber .img-slot {
+      border-color: rgba(0,0,0,0.15);
+    }
+
+    .img-slot:hover { border-color: rgba(255,255,255,0.5); }
+    .bg-cream  .img-slot:hover { border-color: rgba(0,0,0,0.25); }
+
+    .img-slot .icon { font-size: 1.8rem; opacity: 0.4; }
+
+    .img-slot .hint {
+      font-size: 0.75rem;
+      opacity: 0.45;
+      text-align: center;
+      max-width: 280px;
+      line-height: 1.5;
+    }
+
+    /* ── Split layout ── */
+    .split {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      max-width: 980px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .split .split-text { flex: 1; min-width: 260px; }
+    .split .split-img  { flex: 1; min-width: 260px; }
+
+    .split .img-slot { margin-top: 0; max-width: 100%; height: 260px; }
+
+    @media (max-width: 680px) {
+      .split { flex-direction: column; text-align: center; }
+      .split .split-text { min-width: unset; }
+      .split .split-img  { width: 100%; }
+    }
+
+    /* ── Nav arrow ── */
+    .nav-arrow {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: transparent;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0.35;
+      transition: opacity 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .nav-arrow:hover {
+      opacity: 0.85;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .bg-cream .nav-arrow:hover {
+      background: rgba(0,0,0,0.06);
+    }
+
+    .bg-coral  .nav-arrow,
+    .bg-cobalt .nav-arrow,
+    .bg-forest .nav-arrow { color: #fff; }
+
+    .bg-cream  .nav-arrow { color: var(--charcoal); }
+    .bg-amber  .nav-arrow { color: var(--charcoal); }
+
+    /* ── Fear list ── */
+    .fear-list {
+      list-style: none;
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 520px;
+      text-align: left;
+    }
+
+    .fear-list li {
+      font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+      color: #999;
+      padding-left: 18px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .fear-list li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: #bbb;
+      font-size: 1.3rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .fear-pivot {
+      margin-top: 28px;
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      color: #777;
+      max-width: 480px;
+      line-height: 1.6;
+    }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      max-width: 820px;
+      color: var(--charcoal);
+    }
+
+    /* ── Build cards ── */
+    .build-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      max-width: 720px;
+      width: 100%;
+      margin-top: 32px;
+    }
+
+    .build-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: left;
+    }
+
+    .build-card .icon { font-size: 1.3rem; margin-bottom: 8px; }
+    .build-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--charcoal); margin-bottom: 5px; }
+    .build-card p  { font-size: 0.8rem; color: #999; line-height: 1.55; }
+
+    /* ── Big stat ── */
+    .big-stat {
+      font-size: clamp(6rem, 18vw, 13rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--charcoal);
+    }
+
+    .stat-caption {
+      font-size: clamp(1.1rem, 2.8vw, 1.8rem);
+      font-weight: 700;
+      max-width: 560px;
+      margin-top: 12px;
+      color: var(--charcoal);
+      line-height: 1.3;
+    }
+
+    .stat-source {
+      font-size: 0.62rem;
+      color: rgba(30,30,30,0.35);
+      margin-top: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Phone mockup ── */
+    .phone-frame {
+      width: 272px;
+      background: #fff;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 38px;
+      padding: 16px 14px 22px;
+      margin-top: 28px;
+      text-align: left;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    }
+
+    .phone-notch {
+      width: 68px;
+      height: 16px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      margin: 0 auto 16px;
+    }
+
+    .missed-call {
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .mc-avatar {
+      width: 32px;
+      height: 32px;
+      background: #f0f0f0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #999;
+      flex-shrink: 0;
+    }
+
+    .mc-info { flex: 1; }
+    .mc-name   { font-size: 0.82rem; font-weight: 700; color: #1a1a1a; }
+    .mc-detail { font-size: 0.68rem; color: #e53e3e; margin-top: 2px; }
+    .mc-time   { font-size: 0.65rem; color: #aaa; }
+
+    .ai-badge {
+      display: inline-block;
+      background: rgba(34,197,94,0.1);
+      color: #16a34a;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    .bubble {
+      border-radius: 16px;
+      padding: 9px 12px;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      max-width: 90%;
+      margin-bottom: 5px;
+      color: #1a1a1a;
+    }
+
+    .bubble.out {
+      background: var(--cobalt);
+      color: #fff;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble.in {
+      background: #f0f0f0;
+      border-bottom-left-radius: 4px;
+    }
+
+    .btime { font-size: 0.6rem; color: #bbb; margin-bottom: 7px; }
+    .btime.right { text-align: right; }
+
+    /* ── Dashboard ── */
+    .dashboard {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 620px;
+      width: 100%;
+      margin-top: 24px;
+      text-align: left;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    }
+
+    .db-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .db-title { font-size: 0.85rem; font-weight: 700; color: var(--charcoal); }
+    .db-date  { font-size: 0.72rem; color: #aaa; }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      background: var(--cream);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 10px;
+    }
+
+    .stat-val { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+    .stat-lbl { font-size: 0.65rem; color: #aaa; margin-top: 3px; }
+
+    .team-list { display: flex; flex-direction: column; gap: 7px; }
+
+    .team-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--cream);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 9px 11px;
+    }
+
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot.green  { background: #22c55e; }
+    .dot.amber  { background: #f59e0b; }
+
+    .t-name   { font-size: 0.82rem; font-weight: 600; color: var(--charcoal); flex: 1; }
+    .t-status { font-size: 0.7rem; color: #aaa; }
+
+    /* ── Lead list ── */
+    .lead-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      max-width: 580px;
+      width: 100%;
+      margin-top: 24px;
+    }
+
+    .lead-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .l-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--cream);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #999;
+      flex-shrink: 0;
+    }
+
+    .l-info { flex: 1; }
+    .l-name   { font-size: 0.85rem; font-weight: 700; color: var(--charcoal); }
+    .l-detail { font-size: 0.7rem; color: #aaa; margin-top: 2px; }
+
+    .l-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .l-tag.booked  { background: rgba(34,197,94,0.1);  color: #16a34a; }
+    .l-tag.replied { background: rgba(27,95,168,0.1);  color: var(--cobalt); }
+    .l-tag.sent    { background: rgba(242,169,59,0.12); color: #b45309; }
+
+    /* ── Phrases ── */
+    .phrase-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 680px;
+      text-align: left;
+      margin-top: 32px;
+    }
+
+    .phrase-item {
+      border-left: 3px solid var(--amber);
+      padding-left: 20px;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: rgba(255,255,255,0.88);
+      line-height: 1.4;
+    }
+
+    /* ── Footer domain ── */
+    .footer-domain {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 36px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 560px) {
+      section { padding: 44px 20px; }
+      .build-grid { grid-template-columns: 1fr; max-width: 340px; }
+      .stat-row { grid-template-columns: repeat(3,1fr); }
+      h1 { letter-spacing: -0.02em; }
+    }
+
+    /* ── Waveform ── */
+    @keyframes wavebar {
+      0%, 100% { height: 3px; }
+      50% { height: 18px; }
+    }
+    .wave-bar {
+      width: 3px; background: #E8573F; border-radius: 2px; height: 3px;
+      animation: wavebar 0.5s ease infinite;
+    }
+    .wave-bar:nth-child(1) { animation-delay: 0s; }
+    .wave-bar:nth-child(2) { animation-delay: 0.07s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.14s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.21s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.14s; }
+    .wave-bar:nth-child(6) { animation-delay: 0.07s; }
+    .wave-bar:nth-child(7) { animation-delay: 0s; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. HERO -->
+  <section class="bg-coral">
+    <p class="label">LeTip Portland · May 2026</p>
+    <h1>Relationships are what AI will never replace.</h1>
+    <p class="sub">But there's a lot it can replace instead.</p>
+    <img src="team-hero.png" alt="True Glow team" style="max-width:600px; width:100%; border-radius:20px; margin-top:36px; display:block; box-shadow:0 12px 48px rgba(0,0,0,0.18);">
+  </section>
+
+  <!-- 2. VALIDATE THE FEAR -->
+  <section class="bg-cream">
+    <div class="split">
+      <div class="split-text">
+        <h2>The concerns are real.</h2>
+        <ul class="fear-list">
+          <li>AI is going to change jobs.</li>
+          <li>The data centers, the electricity, the cost of all of it.</li>
+          <li>Things are moving faster than anyone can keep up with.</li>
+          <li>Maybe you've tried ChatGPT. It helps you write your emails, and you feel like you've got AI figured out.</li>
+        </ul>
+        <p class="fear-pivot">These concerns are valid. But none of it is going away by ignoring it. Yes, regulation is needed. But waiting for these conversations to be more straightforward isn't the right strategy either. We're treading into uncharted territory, and you as a professional deserve to be in the loop on the tools available to you.</p>
+      </div>
+      <div class="split-img">
+        <img src="portland.png" alt="Portland skyline" style="width:80%; border-radius:16px; display:block; margin:0 auto;">
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. THE PIVOT -->
+  <section class="bg-cobalt">
+    <h1 style="color:rgba(255,255,255,0.45)">The question isn't who's using AI.</h1>
+    <h1 style="margin-top:16px; color:#fff">It's who's using it well.</h1>
+  </section>
+
+  <!-- 4. PULL QUOTE -->
+  <section class="bg-cream">
+    <p class="pull-quote">All non-technical people should be part of the AI conversation.</p>
+    <p style="font-size:clamp(1.2rem,3vw,2rem); font-weight:600; color:var(--cobalt); margin-top:28px; max-width:560px; line-height:1.35;">You can (and you should) have a voice at the table.</p>
+  </section>
+
+  <!-- 5. WHAT AI IS -->
+  <section class="bg-cream">
+    <h2>AI is more than a chatbot.</h2>
+    <p class="sub">For a service business, it can support with the administrative work that eats your time.</p>
+    <div class="build-grid">
+      <div class="build-card">
+        <div class="icon"><img src="icon-phone.png" alt="" style="height:42px; width:auto; display:block;"></div>
+        <h4>Missed calls</h4>
+        <p>Follows up instantly so no lead slips through.</p>
+      </div>
+      <div class="build-card">
+        <div class="icon"><img src="icon-gear.png" alt="" style="height:42px; width:auto; display:block;"></div>
+        <h4>Operations</h4>
+        <p>Schedules, confirms, and keeps your team moving.</p>
+      </div>
+      <div class="build-card">
+        <div class="icon"><img src="icon-cycle.png" alt="" style="height:42px; width:auto; display:block;"></div>
+        <h4>Lead nurturing</h4>
+        <p>Reactivates prospects you forgot to follow up with.</p>
+      </div>
+      <div class="build-card">
+        <div class="icon"><img src="icon-stars.png" alt="" style="height:30px; width:auto; display:block;"></div>
+        <h4>Reviews</h4>
+        <p>Asks for them at the right moment, every time, automatically.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. THE STAT -->
+  <section class="bg-amber">
+    <div class="split">
+      <div class="split-text">
+        <div class="big-stat">78%</div>
+        <p class="stat-caption">of customers go with the first business to respond.</p>
+        <p class="sub" style="margin-top:12px;">Not the best one. Not the cheapest one. The first one.<br>Every missed call is a job you handed to someone else.</p>
+        <p class="stat-source">Source: Lead Connect / Harvard Business Review</p>
+      </div>
+      <div class="split-img">
+        <img src="phone-call.png" alt="Business owner on a call" style="width:78%; border-radius:16px; display:block; margin:0 auto;">
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. DEMO 1: ASKER -->
+  <section id="demo-asker" class="bg-cream">
+    <p class="label" style="color:var(--cobalt); opacity:1">Demo 1</p>
+    <h2>Google reviews.</h2>
+    <p class="sub">Tap a client, tap send. One iMessage from your number.</p>
+    <div style="position:relative; width:440px; max-width:88vw; aspect-ratio:1086/1448; margin-top:28px;">
+      <div style="position:absolute; top:9.5%; left:24.5%; width:51%; height:82%; overflow:hidden; border-radius:8px; z-index:1; font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:#F0EEFF; text-align:left;">
+
+        <!-- HOME SCREEN -->
+        <div id="ask-home" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#F0EEFF;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);">
+          <div style="padding:5px 11px 2px;display:flex;justify-content:space-between;flex-shrink:0;">
+            <span style="font-size:7.5px;font-weight:700;color:#1a1a1a;">7:40</span>
+            <span style="font-size:6px;color:#1a1a1a;">▪▪ ▲ ▪</span>
+          </div>
+          <div style="flex:1;overflow:hidden;padding:5px 9px 0;display:flex;flex-direction:column;gap:5px;">
+            <div style="font-size:6.5px;font-weight:700;color:#6B35E8;letter-spacing:0.07em;">Asker</div>
+            <div style="font-size:13px;font-weight:900;color:#0d0d0d;line-height:1.15;">Good evening,<br>Hannah.</div>
+            <div style="background:linear-gradient(145deg,#5520CC 0%,#A044F5 100%);border-radius:12px;padding:10px;position:relative;flex-shrink:0;">
+              <div style="font-size:9.5px;font-weight:800;color:#fff;line-height:1.25;max-width:74%;">Send a review request</div>
+              <div style="position:absolute;top:9px;right:9px;font-size:13px;">⭐</div>
+              <div style="font-size:6.5px;color:rgba(255,255,255,0.72);margin-top:4px;line-height:1.45;">Choose a customer, pick your tone, and send in seconds.</div>
+              <div id="ask-cta-btn" style="background:#fff;border-radius:8px;padding:5px 0;text-align:center;margin-top:7px;transition:transform 0.15s;">
+                <span style="font-size:7.5px;font-weight:700;color:#5520CC;">Send a review request</span>
+              </div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:9px;box-shadow:0 1px 4px rgba(0,0,0,0.07);flex-shrink:0;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                  <div id="ask-count" style="font-size:22px;font-weight:900;color:#0d0d0d;line-height:1;">1</div>
+                  <div style="font-size:6.5px;color:#888;margin-top:1px;">Requests sent</div>
+                </div>
+                <div style="font-size:6.5px;font-weight:700;color:#6B35E8;margin-top:2px;">This week</div>
+              </div>
+              <div style="height:3.5px;background:#EAE0FF;border-radius:2px;margin-top:6px;overflow:hidden;">
+                <div id="ask-progress-bar" style="width:20%;height:100%;background:#6B35E8;border-radius:2px;transition:width 0.7s ease;"></div>
+              </div>
+              <div id="ask-goal-text" style="font-size:6.5px;color:#888;margin-top:4px;line-height:1.45;">4 more to hit your weekly goal. Keep asking while the experience is fresh.</div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:9px;box-shadow:0 1px 4px rgba(0,0,0,0.07);flex-shrink:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="font-size:8px;font-weight:800;color:#0d0d0d;">Recent requests</div>
+                <div style="font-size:6.5px;font-weight:700;color:#6B35E8;">View all</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:21px;height:21px;border-radius:50%;background:#EEE8FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;">💬</div>
+                <div>
+                  <div id="ask-recent-text" style="font-size:7.5px;font-weight:600;color:#0d0d0d;">Alex received a request</div>
+                  <div style="font-size:6.5px;color:#aaa;">yesterday</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff;border-top:0.5px solid #e8e8e8;padding:5px 8px 9px;display:flex;justify-content:space-around;align-items:center;flex-shrink:0;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:1.5px;background:#EAE0FF;border-radius:18px;padding:3px 10px;">
+              <span style="font-size:11px;">⭐</span>
+              <span style="font-size:6.5px;font-weight:700;color:#6B35E8;">Ask</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:1.5px;padding:3px 7px;">
+              <span style="font-size:11px;opacity:0.4;">🕐</span>
+              <span style="font-size:6.5px;color:#aaa;">History</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:1.5px;padding:3px 7px;">
+              <span style="font-size:11px;opacity:0.4;">⚙️</span>
+              <span style="font-size:6.5px;color:#aaa;">Settings</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTACTS SCREEN -->
+        <div id="ask-contacts" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;transform:translateX(100%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);">
+          <div style="padding:5px 11px 2px;display:flex;justify-content:space-between;flex-shrink:0;">
+            <span style="font-size:7.5px;font-weight:700;color:#1a1a1a;">7:40</span>
+            <span style="font-size:6px;color:#1a1a1a;">▪▪ ▲ ▪</span>
+          </div>
+          <div style="padding:5px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid #e8e8e8;flex-shrink:0;">
+            <span style="font-size:18px;color:#666;line-height:1;margin-top:-2px;">‹</span>
+            <span style="font-size:9px;font-weight:700;color:#1a1a1a;">Contacts</span>
+            <div style="width:17px;height:17px;border-radius:50%;background:#e5e5e5;display:flex;align-items:center;justify-content:center;font-size:8px;color:#666;">✕</div>
+          </div>
+          <div style="flex:1;overflow:hidden;position:relative;padding-right:13px;">
+            <div style="padding:0 7px;">
+              <div style="font-size:7px;font-weight:700;color:#888;padding:5px 0 2px;">A</div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#7B9ED9;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">AW</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Amanda Walker</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#E8916A;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">AC</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Andrew Collins</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#6BAE8C;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">AM</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Ashley Morgan</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#C47DB5;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">AS</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Ava Sullivan</span>
+              </div>
+              <div style="font-size:7px;font-weight:700;color:#888;padding:5px 0 2px;">B</div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#E8916A;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">BT</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Bailey Thompson</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#7B9ED9;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">BE</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Blake Edwards</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#6BAE8C;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">BM</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Brianna Mitchell</span>
+              </div>
+              <div style="font-size:7px;font-weight:700;color:#888;padding:5px 0 2px;">J</div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#C47DB5;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">JC</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Jamie Clark</span>
+              </div>
+              <div id="ask-jennifer-row" style="display:flex;align-items:center;gap:6px;padding:5px 6px;border-bottom:0.5px solid #f0f0f0;border-radius:6px;transition:background 0.2s;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#8E8AC8;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">JH</span></div>
+                <span style="font-size:8px;font-weight:600;color:#1a1a1a;">Jennifer Harris</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid #f0f0f0;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#7B9ED9;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><span style="font-size:6.5px;font-weight:700;color:#fff;">JL</span></div>
+                <span style="font-size:8px;color:#1a1a1a;">Jordan Leblanc</span>
+              </div>
+            </div>
+            <div style="position:absolute;right:1px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:2px 1px;">
+              <span style="font-size:5px;color:#1565C0;font-weight:700;">A</span><span style="font-size:5px;color:#1565C0;font-weight:700;">B</span><span style="font-size:5px;color:#1565C0;font-weight:700;">C</span><span style="font-size:5px;color:#1565C0;font-weight:700;">D</span><span style="font-size:5px;color:#1565C0;font-weight:700;">E</span><span style="font-size:5px;color:#1565C0;font-weight:700;">F</span><span style="font-size:5px;color:#1565C0;font-weight:700;">G</span><span style="font-size:5px;color:#1565C0;font-weight:700;">H</span><span style="font-size:5px;color:#1565C0;font-weight:700;">I</span><span style="font-size:5px;color:#1565C0;font-weight:700;">J</span><span style="font-size:5px;color:#1565C0;font-weight:700;">K</span><span style="font-size:5px;color:#1565C0;font-weight:700;">L</span><span style="font-size:5px;color:#1565C0;font-weight:700;">M</span><span style="font-size:5px;color:#1565C0;font-weight:700;">N</span><span style="font-size:5px;color:#1565C0;font-weight:700;">O</span><span style="font-size:5px;color:#1565C0;font-weight:700;">P</span><span style="font-size:5px;color:#1565C0;font-weight:700;">Q</span><span style="font-size:5px;color:#1565C0;font-weight:700;">R</span><span style="font-size:5px;color:#1565C0;font-weight:700;">S</span><span style="font-size:5px;color:#1565C0;font-weight:700;">T</span><span style="font-size:5px;color:#1565C0;font-weight:700;">U</span><span style="font-size:5px;color:#1565C0;font-weight:700;">V</span><span style="font-size:5px;color:#1565C0;font-weight:700;">W</span><span style="font-size:5px;color:#1565C0;font-weight:700;">X</span><span style="font-size:5px;color:#1565C0;font-weight:700;">Y</span><span style="font-size:5px;color:#1565C0;font-weight:700;">Z</span><span style="font-size:5px;color:#1565C0;font-weight:700;">#</span>
+            </div>
+          </div>
+          <div style="padding:5px 8px 8px;border-top:0.5px solid #e8e8e8;flex-shrink:0;">
+            <div style="background:#f2f2f7;border-radius:8px;padding:5px 8px;display:flex;align-items:center;gap:4px;">
+              <span style="font-size:9px;color:#aaa;">🔍</span>
+              <span style="font-size:7.5px;color:#aaa;">Search</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMESSAGE SCREEN -->
+        <div id="ask-imessage" style="position:absolute;inset:0;transform:translateX(100%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);">
+
+          <!-- COMPOSE SUB-VIEW -->
+          <div id="ask-compose" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#D1D1D6;transition:opacity 0.3s;">
+            <div style="padding:5px 11px 2px;display:flex;justify-content:space-between;flex-shrink:0;">
+              <span style="font-size:7.5px;font-weight:700;color:#1a1a1a;">7:41</span>
+              <span style="font-size:6px;color:#1a1a1a;">▪▪ ▲ ▪</span>
+            </div>
+            <div style="background:#fff;margin:4px 5px 0;border-radius:14px;padding:8px 10px;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,0.12);">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:7px;border-bottom:0.5px solid #f0f0f0;margin-bottom:6px;">
+                <div style="width:17px;"></div>
+                <div style="font-size:8.5px;font-weight:700;color:#1a1a1a;">New iMessage</div>
+                <div style="width:17px;height:17px;border-radius:50%;background:#e5e5e5;display:flex;align-items:center;justify-content:center;font-size:8px;color:#555;">✕</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <span style="font-size:7.5px;color:#888;">To:</span>
+                <span style="background:#e8f0fe;color:#1565C0;font-size:7px;font-weight:600;padding:2px 8px;border-radius:10px;">Jennifer Harris</span>
+              </div>
+            </div>
+            <div style="flex:1;"></div>
+            <div style="background:#fff;margin:0 5px 3px;border-radius:14px;padding:8px 9px;">
+              <div style="font-size:7px;color:#1a1a1a;line-height:1.55;text-align:left;">Hi Jennifer! Working with you was a pleasure. Would you mind leaving us a Google review? It only takes a minute and means the world to us.<br><br><span style="color:#1565C0;">https://g.page/r/CWORg...</span><br><br>Thank you!</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+                <div style="width:16px;height:16px;border-radius:50%;border:1.5px solid #c0c0c0;display:flex;align-items:center;justify-content:center;"><span style="font-size:11px;color:#aaa;line-height:1;">+</span></div>
+                <div id="ask-send-btn" style="width:22px;height:22px;border-radius:50%;background:#1565C0;display:flex;align-items:center;justify-content:center;transition:background 0.25s,transform 0.15s;">
+                  <span style="color:#fff;font-size:13px;line-height:1;">↑</span>
+                </div>
+              </div>
+            </div>
+            <div style="background:#D1D1D6;flex-shrink:0;padding:3px 3px 5px;">
+              <div style="display:flex;justify-content:space-around;padding:2px 4px 3px;margin-bottom:2px;border-bottom:0.5px solid rgba(0,0,0,0.12);">
+                <span style="font-size:6.5px;color:#000;">I</span><span style="font-size:6.5px;color:#ccc;">|</span><span style="font-size:6.5px;color:#000;">The</span><span style="font-size:6.5px;color:#ccc;">|</span><span style="font-size:6.5px;color:#000;">I'm</span><span style="font-size:6.5px;color:#ccc;">|</span><span style="font-size:6.5px;color:#999;">≡A</span>
+              </div>
+              <div style="display:flex;gap:1.5px;margin-bottom:1.5px;">
+                <div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">q</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">w</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">e</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">r</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">t</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">y</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">u</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">i</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">o</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">p</div>
+              </div>
+              <div style="display:flex;gap:1.5px;margin-bottom:1.5px;padding:0 5px;">
+                <div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">a</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">s</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">d</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">f</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">g</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">h</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">j</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">k</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">l</div>
+              </div>
+              <div style="display:flex;gap:1.5px;margin-bottom:1.5px;">
+                <div style="flex:1.5;height:15px;background:#ADB5BD;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:8px;">⇧</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">z</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">x</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">c</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">v</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">b</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">n</div><div style="flex:1;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">m</div><div style="flex:1.5;height:15px;background:#ADB5BD;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:9px;">⌫</div>
+              </div>
+              <div style="display:flex;gap:1.5px;">
+                <div style="flex:1.5;height:15px;background:#ADB5BD;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:6px;">123</div><div style="flex:1.2;height:15px;background:#ADB5BD;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:8px;">🌐</div><div style="flex:4;height:15px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #888;"></div><div style="flex:1.8;height:15px;background:#ADB5BD;border-radius:3px;box-shadow:0 1px 0 #888;display:flex;align-items:center;justify-content:center;font-size:7px;">↩</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- THREAD SUB-VIEW -->
+          <div id="ask-thread" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;opacity:0;pointer-events:none;transition:opacity 0.35s;">
+            <div style="padding:5px 11px 2px;display:flex;justify-content:space-between;flex-shrink:0;background:#f7f7f7;">
+              <span style="font-size:7.5px;font-weight:700;color:#1a1a1a;">7:41</span>
+              <span style="font-size:6px;color:#1a1a1a;">▪▪ ▲ ▪</span>
+            </div>
+            <div style="background:#f7f7f7;padding:5px 8px;display:flex;align-items:center;border-bottom:0.5px solid #e0e0e0;flex-shrink:0;">
+              <span style="font-size:10px;color:#1565C0;font-weight:600;flex:1;">‹ Back</span>
+              <div style="display:flex;flex-direction:column;align-items:center;flex:2;">
+                <span style="font-size:8.5px;font-weight:700;color:#1a1a1a;">Jennifer Harris</span>
+              </div>
+              <div style="flex:1;display:flex;justify-content:flex-end;">
+                <span style="font-size:9px;color:#1565C0;">📞</span>
+              </div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:10px 8px 6px;">
+              <div style="display:flex;justify-content:flex-end;">
+                <div id="ask-bubble" style="background:#1565C0;color:#fff;border-radius:16px 16px 3px 16px;padding:8px 10px;max-width:86%;opacity:0;transform:translateX(14px);transition:opacity 0.4s,transform 0.4s;">
+                  <div style="font-size:9px;line-height:1.55;text-align:left;">Hi Jennifer! Working with you was a pleasure. Would you mind leaving us a Google review? It only takes a minute and means the world to us.<br><br><span style="color:#b3d4ff;">https://g.page/r/CWORg...</span><br><br>Thank you!</div>
+                </div>
+              </div>
+              <div id="ask-delivered" style="text-align:right;font-size:7.5px;color:#aaa;margin-top:3px;opacity:0;transition:opacity 0.35s;">Delivered</div>
+              <div id="ask-jennifer-reply" style="display:flex;justify-content:flex-start;margin-top:8px;opacity:0;transform:translateX(-10px);transition:opacity 0.4s,transform 0.4s;">
+                <div style="background:#E9E9EB;color:#1a1a1a;border-radius:14px 14px 14px 3px;padding:8px 10px;max-width:84%;">
+                  <div style="font-size:9px;line-height:1.55;text-align:left;">Absolutely, just gave you five stars! ⭐</div>
+                </div>
+              </div>
+            </div>
+            <div style="background:#f7f7f7;border-top:0.5px solid #e0e0e0;padding:5px 8px;flex-shrink:0;">
+              <div style="background:#fff;border-radius:18px;padding:4px 10px;border:0.5px solid #ddd;display:flex;align-items:center;">
+                <span style="font-size:7px;color:#aaa;flex:1;">iMessage</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <img src="iphone-frame.png" alt="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:2; pointer-events:none;">
+    </div>
+  </section>
+
+  <!-- 8. DEMO 2: QUICK REPLY -->
+  <section id="demo-quickreply" class="bg-cream">
+    <p class="label" style="color:var(--coral); opacity:1">Demo 2</p>
+    <h2>Quick reply.</h2>
+    <p class="sub">Your phone rings, you miss it. Here's what happens before you notice.</p>
+    <div style="position:relative; width:440px; max-width:88vw; aspect-ratio:1086/1448; margin-top:28px;">
+      <div style="position:absolute; top:9.5%; left:24.5%; width:51%; height:81%; overflow:hidden; border-radius:6px 6px 18px 18px; z-index:1; font-family:-apple-system,BlinkMacSystemFont,sans-serif; text-align:left;">
+
+        <!-- SCREEN 1: INCOMING CALL -->
+        <div id="qr-call" style="position:absolute;inset:0;background:linear-gradient(175deg,#1C1C3A 0%,#2E1760 100%);display:flex;flex-direction:column;align-items:center;transition:opacity 0.5s;">
+          <div style="width:100%;padding:5px 11px 2px;display:flex;justify-content:space-between;flex-shrink:0;">
+            <span style="font-size:7.5px;font-weight:700;color:#fff;">9:41</span>
+            <span style="font-size:6px;color:rgba(255,255,255,0.8);">▪▪ ▲ ▪</span>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding-bottom:8px;">
+            <div style="font-size:7px;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-bottom:6px;">incoming call</div>
+            <div style="width:50px;height:50px;border-radius:50%;background:#4A90D9;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(74,144,217,0.2);">
+              <span style="font-size:15px;font-weight:700;color:#fff;">MH</span>
+            </div>
+            <div style="font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-top:5px;">Mike Hendrix</div>
+            <div style="font-size:7px;color:rgba(255,255,255,0.45);">mobile</div>
+          </div>
+          <div style="width:100%;padding:0 22px 16px;display:flex;justify-content:space-between;align-items:flex-end;flex-shrink:0;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:34px;height:34px;border-radius:50%;background:#E8453C;display:flex;align-items:center;justify-content:center;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 5.5C3 14.06 9.94 21 18.5 21c.386 0 .77-.014 1.148-.042.435-.032.818-.298 1.006-.694l1.483-3.196a1.25 1.25 0 0 0-.32-1.467l-2.806-2.317a1.25 1.25 0 0 0-1.516-.044l-1.617 1.21a9.927 9.927 0 0 1-4.33-4.33l1.21-1.617a1.25 1.25 0 0 0-.044-1.516L10.397 4.18a1.25 1.25 0 0 0-1.467-.319L5.736 5.344C5.34 5.533 5.074 5.915 5.042 6.35A14.38 14.38 0 0 0 5 7.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+              <span style="font-size:6px;color:rgba(255,255,255,0.6);">Decline</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:34px;height:34px;border-radius:50%;background:#34C759;display:flex;align-items:center;justify-content:center;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 5.5C3 14.06 9.94 21 18.5 21c.386 0 .77-.014 1.148-.042.435-.032.818-.298 1.006-.694l1.483-3.196a1.25 1.25 0 0 0-.32-1.467l-2.806-2.317a1.25 1.25 0 0 0-1.516-.044l-1.617 1.21a9.927 9.927 0 0 1-4.33-4.33l1.21-1.617a1.25 1.25 0 0 0-.044-1.516L10.397 4.18a1.25 1.25 0 0 0-1.467-.319L5.736 5.344C5.34 5.533 5.074 5.915 5.042 6.35A14.38 14.38 0 0 0 5 7.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+              <span style="font-size:6px;color:rgba(255,255,255,0.6);">Accept</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 2: MISSED CALL NOTIFICATION (lock screen) -->
+        <div id="qr-missed-screen" style="position:absolute;inset:0;background:#1C1C1E;opacity:0;transition:opacity 0.4s;display:flex;flex-direction:column;">
+          <div style="padding:5px 11px 2px;display:flex;justify-content:space-between;flex-shrink:0;">
+            <span style="font-size:7.5px;font-weight:700;color:#fff;">9:41</span>
+            <span style="font-size:6px;color:rgba(255,255,255,0.8);">▪▪ ▲ ▪</span>
+          </div>
+          <div style="text-align:center;padding:8px 0 5px;flex-shrink:0;">
+            <div style="font-size:24px;font-weight:200;color:#fff;line-height:1;letter-spacing:-0.02em;">9:41</div>
+            <div style="font-size:7px;color:rgba(255,255,255,0.45);margin-top:3px;">Wednesday, May 27</div>
+          </div>
+          <div id="qr-notif-card" style="margin:6px 6px 0;background:rgba(48,48,52,0.98);border-radius:12px;padding:8px 9px;transform:translateY(-90px);transition:transform 0.45s cubic-bezier(0.4,0,0.2,1);">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <div style="width:15px;height:15px;border-radius:4px;background:#E8453C;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none"><path d="M3 5.5C3 14.06 9.94 21 18.5 21c.386 0 .77-.014 1.148-.042.435-.032.818-.298 1.006-.694l1.483-3.196a1.25 1.25 0 0 0-.32-1.467l-2.806-2.317a1.25 1.25 0 0 0-1.516-.044l-1.617 1.21a9.927 9.927 0 0 1-4.33-4.33l1.21-1.617a1.25 1.25 0 0 0-.044-1.516L10.397 4.18a1.25 1.25 0 0 0-1.467-.319L5.736 5.344C5.34 5.533 5.074 5.915 5.042 6.35A14.38 14.38 0 0 0 5 7.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+              <span style="font-size:6.5px;font-weight:600;color:rgba(255,255,255,0.6);flex:1;">Phone</span>
+              <span style="font-size:6px;color:rgba(255,255,255,0.35);">now</span>
+            </div>
+            <div style="font-size:8px;font-weight:700;color:#fff;">Missed Call</div>
+            <div style="font-size:7px;color:rgba(255,255,255,0.65);margin-top:1px;">Mike Hendrix</div>
+          </div>
+        </div>
+
+        <!-- SCREEN 3: IMESSAGE THREAD -->
+        <div id="qr-thread-screen" style="position:absolute;inset:0;background:#fff;opacity:0;transition:opacity 0.4s;display:flex;flex-direction:column;">
+          <div style="padding:5px 11px 2px;display:flex;justify-content:space-between;flex-shrink:0;">
+            <span style="font-size:8px;font-weight:700;color:#1a1a1a;">9:41</span>
+            <span style="font-size:7px;color:#1a1a1a;">▪▪ ▲ ▪</span>
+          </div>
+          <div style="padding:5px 10px;display:flex;align-items:center;border-bottom:0.5px solid #e8e8e8;flex-shrink:0;gap:5px;">
+            <span style="font-size:18px;color:#007AFF;line-height:1;">‹</span>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+              <div style="width:28px;height:28px;border-radius:50%;background:#4A90D9;display:flex;align-items:center;justify-content:center;margin-bottom:2px;">
+                <span style="font-size:9px;font-weight:700;color:#fff;">MH</span>
+              </div>
+              <div style="font-size:9.5px;font-weight:600;color:#1a1a1a;">Mike Hendrix</div>
+            </div>
+            <div style="width:16px;"></div>
+          </div>
+          <div style="flex:1;padding:10px 8px 4px;display:flex;flex-direction:column;gap:5px;overflow:hidden;">
+            <div id="qr-msg1" style="display:flex;justify-content:flex-end;opacity:0;transform:translateY(6px);transition:opacity 0.4s,transform 0.4s;">
+              <div style="background:#007AFF;color:#fff;border-radius:16px 16px 3px 16px;padding:8px 10px;max-width:86%;">
+                <div style="font-size:9px;line-height:1.5;text-align:left;">Hi Mike, this is True Glow Cleaning. Sorry I missed your call. Happy to connect. What can we help you with?</div>
+              </div>
+            </div>
+            <div id="qr-time1" style="text-align:right;font-size:7.5px;color:#aaa;opacity:0;transition:opacity 0.3s;padding-right:2px;">Delivered</div>
+            <div id="qr-reply" style="display:flex;justify-content:flex-start;opacity:0;transform:translateY(6px);transition:opacity 0.4s,transform 0.4s;">
+              <div style="background:#E9E9EB;color:#1a1a1a;border-radius:16px 16px 16px 3px;padding:8px 10px;max-width:80%;">
+                <div style="font-size:9px;line-height:1.5;text-align:left;">Hey! We just moved in and need a deep clean ASAP</div>
+              </div>
+            </div>
+            <div id="qr-time2" style="text-align:left;font-size:7.5px;color:#aaa;opacity:0;transition:opacity 0.3s;padding-left:3px;">2:16 PM</div>
+            <div id="qr-msg2" style="display:flex;justify-content:flex-end;opacity:0;transform:translateY(6px);transition:opacity 0.4s,transform 0.4s;">
+              <div style="background:#007AFF;color:#fff;border-radius:16px 16px 3px 16px;padding:8px 10px;max-width:86%;">
+                <div style="font-size:9px;line-height:1.5;text-align:left;">Perfect timing. I can get you on the schedule this week. Are you in SE Portland?</div>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:0.5px solid #e0e0e0;padding:5px 8px 7px;flex-shrink:0;">
+            <div style="background:#f2f2f7;border-radius:18px;padding:5px 10px;display:flex;align-items:center;">
+              <span style="font-size:8px;color:#aaa;flex:1;">iMessage</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <img src="iphone-frame.png" alt="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:2; pointer-events:none;">
+    </div>
+  </section>
+
+  <!-- 9. DEMO 3: HOLLER -->
+  <section id="demo-holler" class="bg-cream">
+    <p class="label" style="color:#b45309; opacity:1">Demo 3</p>
+
+    <h2>CRM.</h2>
+    <p class="sub">Voice-first CRM. Speak to log. Your notes write themselves.</p>
+    <div style="position:relative; width:440px; max-width:88vw; aspect-ratio:1086/1448; margin-top:28px;">
+      <div style="position:absolute; top:9.5%; left:24.5%; width:51%; height:82%; overflow:hidden; border-radius:8px; background:#f7f7f7; z-index:1; font-family:-apple-system,BlinkMacSystemFont,sans-serif; display:flex; flex-direction:column;">
+        <div style="background:#1a2b5e; color:rgba(255,255,255,0.65); font-size:8px; padding:4px 12px 3px; display:flex; justify-content:space-between; flex-shrink:0;"><span>9:41</span><span>●●●</span></div>
+        <div style="background:#1a2b5e; padding:8px 12px 10px; flex-shrink:0;">
+          <div style="font-size:14px; font-weight:800; color:#fff; letter-spacing:-0.01em;">CRM</div>
+          <div style="font-size:9px; color:rgba(255,255,255,0.45); margin-top:1px;">Voice-first CRM</div>
+        </div>
+        <div style="flex:1; overflow:hidden; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+          <div style="font-size:8px; font-weight:700; color:#bbb; text-transform:uppercase; letter-spacing:0.1em; padding:0 2px 2px;">Recent Logs</div>
+          <div id="holler-entry" style="background:#EEF4FF; border-radius:9px; padding:8px 9px; border-left:2px solid #1B5FA8; opacity:0; transform:translateY(-8px); transition:opacity 0.5s, transform 0.5s;">
+            <div style="font-size:10px; font-weight:700; color:#1a1a1a;">Tom Rivera</div>
+            <div style="font-size:8px; color:#555; margin-top:2px; line-height:1.4;">"Roofing contractor, losing leads after estimates, wants follow-up automated"</div>
+            <div style="font-size:8px; color:#1B5FA8; font-weight:600; margin-top:4px;">↗ Schedule a demo</div>
+          </div>
+          <div style="background:#fff; border-radius:9px; padding:8px 9px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-size:10px; font-weight:700; color:#1a1a1a;">Sarah Kimball</div>
+            <div style="font-size:8px; color:#888; margin-top:2px; line-height:1.4;">"Networking lunch, runs a med spa, interested in client reactivation"</div>
+            <div style="font-size:8px; color:#b45309; font-weight:600; margin-top:4px;">↗ Send intro deck</div>
+          </div>
+          <div style="background:#fff; border-radius:9px; padding:8px 9px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-size:10px; font-weight:700; color:#1a1a1a;">Dave Torres</div>
+            <div style="font-size:8px; color:#888; margin-top:2px; line-height:1.4;">"HubSpot and Mailchimp not syncing, contact lists getting out of date"</div>
+            <div style="font-size:8px; color:#16a34a; font-weight:600; margin-top:4px;">↗ Discovery call Thursday</div>
+          </div>
+        </div>
+        <div id="holler-recording" style="display:none; position:absolute; bottom:52px; left:0; right:0; background:#fff; border-radius:12px 12px 0 0; padding:12px; box-shadow:0 -4px 20px rgba(0,0,0,0.08); z-index:10; flex-direction:column; align-items:center; gap:7px;">
+          <div style="font-size:8px; font-weight:700; color:#E8573F; letter-spacing:0.1em;">RECORDING</div>
+          <div style="display:flex; align-items:flex-end; gap:3px; height:22px;">
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          </div>
+          <div id="holler-transcript" style="font-size:8px; color:#999; text-align:center; min-height:12px;"></div>
+        </div>
+        <div style="background:#fff; border-top:1px solid #f0f0f0; padding:8px; display:flex; justify-content:center; flex-shrink:0;">
+          <div id="holler-mic" style="width:40px; height:40px; border-radius:50%; background:#1a2b5e; display:flex; align-items:center; justify-content:center; transition:transform 0.25s, background 0.25s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </div>
+        </div>
+      </div>
+      <img src="iphone-frame.png" alt="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:2; pointer-events:none;">
+    </div>
+  </section>
+
+  <!-- 10. FOUR PHRASES -->
+  <section class="bg-cobalt">
+    <p class="label">What this means for your business.</p>
+    <h2>Four things worth remembering.</h2>
+    <div class="phrase-list">
+      <div class="phrase-item">The competitive gap isn't big vs. small anymore. It's adopter vs. non-adopter.</div>
+      <div class="phrase-item">You didn't get into your field to do paperwork late at night. Technology gives you time back.</div>
+      <div class="phrase-item">The best businesses feel more human. Technology handles the busy work so you can answer the phone and build real relationships.</div>
+      <div class="phrase-item">You're not building an AI business. You're building the business you always wanted, and technology has finally caught up at a price that used to only be available to big companies.</div>
+    </div>
+  </section>
+
+  <!-- 11. CLOSE -->
+  <section class="bg-forest">
+    <h1>Relationships are what AI will never replace.</h1>
+    <p class="sub" style="font-size:clamp(1rem,2.5vw,1.4rem); color:rgba(255,255,255,0.65); margin-top:22px;">
+Technology can handle what falls through the cracks so you can focus on people and real connections.
+    </p>
+    <img src="handshake.png" alt="Service provider and client handshake" style="max-width:520px; width:100%; aspect-ratio:1536/881; object-fit:cover; object-position:center; border-radius:20px; margin-top:32px; display:block; box-shadow:0 12px 48px rgba(0,0,0,0.25);">
+    <p class="footer-domain">leadengine.solutions</p>
+  </section>
+
+  <script>
+    const sections = Array.from(document.querySelectorAll('section'));
+
+    // Watermark on every section
+    document.querySelectorAll('section').forEach(section => {
+      const logo = document.createElement('img');
+      logo.src = 'lead-engine-logo.png';
+      logo.alt = '';
+      logo.setAttribute('aria-hidden', 'true');
+      const isLight = section.classList.contains('bg-cream') || section.classList.contains('bg-amber');
+      const opacity = isLight ? '0.55' : '0.18';
+      const link = document.createElement('a');
+      link.href = '#';
+      link.setAttribute('aria-label', 'Back to top');
+      link.style.cssText = 'position:absolute;bottom:28px;right:32px;display:block;';
+      logo.style.cssText = `width:280px;opacity:${opacity};filter:brightness(0) invert(1);display:block;cursor:pointer;`;
+      link.addEventListener('click', e => { e.preventDefault(); sections[0].scrollIntoView({ behavior: 'smooth' }); });
+      link.appendChild(logo);
+      section.appendChild(link);
+    });
+
+    // ── Demo animations ──
+
+    function runAsker() {
+      const home = document.getElementById('ask-home');
+      const contacts = document.getElementById('ask-contacts');
+      const imessage = document.getElementById('ask-imessage');
+      const ctaBtn = document.getElementById('ask-cta-btn');
+      const jenniferRow = document.getElementById('ask-jennifer-row');
+      const sendBtn = document.getElementById('ask-send-btn');
+      const count = document.getElementById('ask-count');
+      const progressBar = document.getElementById('ask-progress-bar');
+      const goalText = document.getElementById('ask-goal-text');
+      const recentText = document.getElementById('ask-recent-text');
+      if (!home) return;
+
+      // Reset without animation
+      [home, contacts, imessage].forEach(el => el.style.transition = 'none');
+      home.style.transform = 'translateX(0)';
+      contacts.style.transform = 'translateX(100%)';
+      imessage.style.transform = 'translateX(100%)';
+      if (count) count.textContent = '1';
+      if (progressBar) { progressBar.style.transition = 'none'; progressBar.style.width = '20%'; }
+      if (goalText) goalText.textContent = '4 more to hit your weekly goal. Keep asking while the experience is fresh.';
+      if (recentText) recentText.textContent = 'Alex received a request';
+      if (sendBtn) { sendBtn.style.background = '#1565C0'; sendBtn.style.transform = 'scale(1)'; }
+      if (jenniferRow) jenniferRow.style.background = '';
+      const compose = document.getElementById('ask-compose');
+      const thread = document.getElementById('ask-thread');
+      const bubble = document.getElementById('ask-bubble');
+      const delivered = document.getElementById('ask-delivered');
+      const jReply = document.getElementById('ask-jennifer-reply');
+      if (compose) { compose.style.transition = 'none'; compose.style.opacity = '1'; compose.style.pointerEvents = 'auto'; }
+      if (thread) { thread.style.transition = 'none'; thread.style.opacity = '0'; thread.style.pointerEvents = 'none'; }
+      if (bubble) { bubble.style.transition = 'none'; bubble.style.opacity = '0'; bubble.style.transform = 'translateX(14px)'; }
+      if (delivered) { delivered.style.transition = 'none'; delivered.style.opacity = '0'; }
+      if (jReply) { jReply.style.transition = 'none'; jReply.style.opacity = '0'; jReply.style.transform = 'translateX(-10px)'; }
+
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        [home, contacts, imessage].forEach(el => el.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.2,1)');
+        if (progressBar) progressBar.style.transition = 'width 0.7s ease';
+        if (compose) compose.style.transition = 'opacity 0.3s';
+        if (thread) thread.style.transition = 'opacity 0.35s';
+        if (bubble) bubble.style.transition = 'opacity 0.4s, transform 0.4s';
+        if (delivered) delivered.style.transition = 'opacity 0.35s';
+        if (jReply) jReply.style.transition = 'opacity 0.4s, transform 0.4s';
+      }));
+
+      // Tap CTA button
+      setTimeout(() => { if (ctaBtn) ctaBtn.style.transform = 'scale(0.95)'; }, 1800);
+      setTimeout(() => { if (ctaBtn) ctaBtn.style.transform = 'scale(1)'; }, 2050);
+
+      // Slide to contacts
+      setTimeout(() => {
+        home.style.transform = 'translateX(-100%)';
+        contacts.style.transform = 'translateX(0)';
+      }, 2400);
+
+      // Highlight Jennifer
+      setTimeout(() => { if (jenniferRow) jenniferRow.style.background = '#EEE8FF'; }, 4200);
+
+      // Slide to iMessage
+      setTimeout(() => {
+        contacts.style.transform = 'translateX(-100%)';
+        imessage.style.transform = 'translateX(0)';
+      }, 5000);
+
+      // Tap send button → compose fades out → thread + blue bubble appear
+      setTimeout(() => { if (sendBtn) sendBtn.style.transform = 'scale(0.88)'; }, 7200);
+      setTimeout(() => { if (sendBtn) { sendBtn.style.transform = 'scale(1)'; sendBtn.style.background = '#16a34a'; } }, 7450);
+      setTimeout(() => {
+        const compose = document.getElementById('ask-compose');
+        const thread = document.getElementById('ask-thread');
+        const bubble = document.getElementById('ask-bubble');
+        const delivered = document.getElementById('ask-delivered');
+        const jReply = document.getElementById('ask-jennifer-reply');
+        if (compose) { compose.style.opacity = '0'; compose.style.pointerEvents = 'none'; }
+        if (thread) { thread.style.opacity = '1'; thread.style.pointerEvents = 'auto'; }
+        setTimeout(() => {
+          if (bubble) { bubble.style.opacity = '1'; bubble.style.transform = 'translateX(0)'; }
+          setTimeout(() => {
+            if (delivered) delivered.style.opacity = '1';
+            // Jennifer replies ~1.4s after Delivered
+            setTimeout(() => {
+              if (jReply) { jReply.style.opacity = '1'; jReply.style.transform = 'translateX(0)'; }
+            }, 1400);
+          }, 380);
+        }, 120);
+      }, 7800);
+
+      // Return to home — extended to let Jennifer's reply breathe
+      setTimeout(() => {
+        imessage.style.transform = 'translateX(100%)';
+        home.style.transform = 'translateX(0)';
+      }, 11200);
+
+      // Update home state
+      setTimeout(() => {
+        if (count) count.textContent = '2';
+        if (progressBar) progressBar.style.width = '40%';
+        if (goalText) goalText.textContent = '3 more to hit your weekly goal. Keep it up!';
+        if (recentText) recentText.textContent = 'Jennifer received a request';
+      }, 11500);
+
+      guardedTimeout('asker', runAsker, 16500);
+    }
+
+    function runQuickReply() {
+      const callScreen   = document.getElementById('qr-call');
+      const missedScreen = document.getElementById('qr-missed-screen');
+      const notifCard    = document.getElementById('qr-notif-card');
+      const threadScreen = document.getElementById('qr-thread-screen');
+      const msg1  = document.getElementById('qr-msg1');
+      const time1 = document.getElementById('qr-time1');
+      const reply = document.getElementById('qr-reply');
+      const time2 = document.getElementById('qr-time2');
+      const msg2  = document.getElementById('qr-msg2');
+      if (!callScreen) return;
+
+      // Reset — no transitions
+      callScreen.style.transition   = 'none'; callScreen.style.opacity   = '1';
+      missedScreen.style.transition = 'none'; missedScreen.style.opacity = '0';
+      threadScreen.style.transition = 'none'; threadScreen.style.opacity = '0';
+      if (notifCard) { notifCard.style.transition = 'none'; notifCard.style.transform = 'translateY(-90px)'; }
+      [msg1, time1, reply, time2, msg2].forEach(el => {
+        if (!el) return;
+        el.style.transition = 'none'; el.style.opacity = '0';
+        if (el.id !== 'qr-time1' && el.id !== 'qr-time2') el.style.transform = 'translateY(6px)';
+      });
+
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        callScreen.style.transition   = 'opacity 0.5s';
+        missedScreen.style.transition = 'opacity 0.4s';
+        threadScreen.style.transition = 'opacity 0.4s';
+        if (notifCard) notifCard.style.transition = 'transform 0.45s cubic-bezier(0.4,0,0.2,1)';
+        [msg1, reply, msg2].forEach(el => { if (el) el.style.transition = 'opacity 0.4s, transform 0.4s'; });
+        [time1, time2].forEach(el => { if (el) el.style.transition = 'opacity 0.3s'; });
+      }));
+
+      // Call rings for ~3s, then miss it
+      setTimeout(() => { callScreen.style.opacity = '0'; }, 3000);
+
+      // Lock screen fades in
+      setTimeout(() => { missedScreen.style.opacity = '1'; }, 3500);
+
+      // Notification card drops down
+      setTimeout(() => { if (notifCard) notifCard.style.transform = 'translateY(0)'; }, 3900);
+
+      // Hold on notification, then cut to iMessage thread
+      setTimeout(() => { missedScreen.style.opacity = '0'; threadScreen.style.opacity = '1'; }, 6000);
+
+      // Messages appear — generous spacing so the conversation is easy to follow
+      setTimeout(() => { if (msg1)  { msg1.style.opacity  = '1'; msg1.style.transform  = 'translateY(0)'; } }, 6700);
+      setTimeout(() => { if (time1) time1.style.opacity = '1'; }, 7400);
+      setTimeout(() => { if (reply) { reply.style.opacity = '1'; reply.style.transform = 'translateY(0)'; } }, 9500);
+      setTimeout(() => { if (time2) time2.style.opacity = '1'; }, 10100);
+      setTimeout(() => { if (msg2)  { msg2.style.opacity  = '1'; msg2.style.transform  = 'translateY(0)'; } }, 12000);
+
+      // Hold on last message, then fade and loop
+      setTimeout(() => { threadScreen.style.transition = 'opacity 0.8s'; threadScreen.style.opacity = '0'; }, 16000);
+      guardedTimeout('quickreply', runQuickReply, 16900);
+    }
+
+    function runHoller() {
+      const mic = document.getElementById('holler-mic');
+      const rec = document.getElementById('holler-recording');
+      const entry = document.getElementById('holler-entry');
+      const transcript = document.getElementById('holler-transcript');
+      if (!mic) return;
+      mic.style.transform = 'scale(1)'; mic.style.background = '#1a2b5e';
+      rec.style.display = 'none';
+      entry.style.opacity = '0'; entry.style.transform = 'translateY(-8px)';
+      if (transcript) transcript.textContent = '';
+      setTimeout(() => { mic.style.transform = 'scale(1.15)'; mic.style.background = '#E8573F'; }, 2000);
+      setTimeout(() => { rec.style.display = 'flex'; }, 2500);
+      setTimeout(() => { if (transcript) transcript.textContent = '"Tom Rivera, roofing contractor..."'; }, 4500);
+      setTimeout(() => { if (transcript) transcript.textContent = '"...losing leads after estimates, wants follow-up automated"'; }, 5500);
+      setTimeout(() => {
+        rec.style.display = 'none';
+        mic.style.transform = 'scale(1)'; mic.style.background = '#1a2b5e';
+        entry.style.opacity = '1'; entry.style.transform = 'translateY(0)';
+      }, 6800);
+      guardedTimeout('holler', runHoller, 12000);
+    }
+
+    // Each demo gets a generation token. Incrementing it cancels all pending
+    // timeouts from the previous run without storing every individual handle.
+    const gen = { asker: 0, quickreply: 0, holler: 0 };
+
+    function guardedTimeout(key, fn, delay) {
+      const g = gen[key];
+      setTimeout(() => { if (gen[key] === g) fn(); }, delay);
+    }
+
+    // Patch each run function to use guardedTimeout for its self-scheduling loop.
+    // The loop timeout is the only one that matters for cancellation — intermediate
+    // animation steps complete quickly and the reset at the top of each run() cleans state.
+    const _baseAsker = runAsker;
+    runAsker = function() {
+      gen.asker++;
+      _baseAsker();
+    };
+    const _baseQR = runQuickReply;
+    runQuickReply = function() {
+      gen.quickreply++;
+      _baseQR();
+    };
+    const _baseHoller = runHoller;
+    runHoller = function() {
+      gen.holler++;
+      _baseHoller();
+    };
+
+    // Fire demo fresh when section enters view; bump generation to kill old loop on leave.
+    const demoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.target.id === 'demo-asker') {
+          if (entry.isIntersecting) runAsker(); else gen.asker++;
+        }
+        if (entry.target.id === 'demo-quickreply') {
+          if (entry.isIntersecting) runQuickReply(); else gen.quickreply++;
+        }
+        if (entry.target.id === 'demo-holler') {
+          if (entry.isIntersecting) runHoller(); else gen.holler++;
+        }
+      });
+    }, { threshold: 0.6 });
+
+    ['demo-asker','demo-quickreply','demo-holler'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) demoObserver.observe(el);
+    });
+
+    const chevron = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 9,12 15,6"/></svg>`;
+
+    sections.forEach((section, i) => {
+      if (i === sections.length - 1) return;
+      const btn = document.createElement('button');
+      btn.className = 'nav-arrow';
+      btn.innerHTML = chevron;
+      btn.setAttribute('aria-label', 'Next section');
+      btn.addEventListener('click', () => {
+        sections[i + 1].scrollIntoView({ behavior: 'smooth' });
+      });
+      section.appendChild(btn);
+    });
+  </script>
+</body>
+</html>
